@@ -6,7 +6,6 @@
         :to="route"
         :key="route.path"
       >{{route.name}}</router-link>
-      <button @click="testAuth">Login</button>
     </main>
   </header>
 </template>
@@ -20,9 +19,16 @@ export default {
   },
   methods: {
     async testAuth() {
-      this.authResponse = await fetch("http://localhost:3000/login", {
-        method: "post"
-      }).then(r => r.json());
+      this.authResponse = await fetch(
+        "http://localhost:3000/api/v1/auth/register",
+        {
+          method: "post",
+          body: JSON.stringify({ username: "test", password: "test" }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      ).then(r => r.json());
       this.$swal({
         toast: true,
         position: "top-end",
