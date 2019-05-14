@@ -7,13 +7,13 @@
     <div v-if="selection==='login'">
       <input type="text" v-model="username" placeholder="Username">
       <input type="password" placeholder="Password" v-model="password">
-      <button @click="regiser">Login</button>
+      <button @click="login">Login</button>
     </div>
     <div v-if="selection==='register'">
       <input type="text" v-model="username" placeholder="Username">
       <input type="text" v-model="email" placeholder="Email">
       <input type="password" placeholder="Password" v-model="password">
-      <button @click="login">Register</button>
+      <button @click="regiser">Register</button>
     </div>
   </div>
 </template>
@@ -34,8 +34,7 @@ export default {
   },
   methods: {
     async login() {
-      const { username, password, email } = this;
-      console.log(JSON.stringify({ username, password }));
+      const { username, password } = this;
       this.authResponse = await (await fetch(
         "http://localhost:3000/api/v1/auth/login",
         {
@@ -56,8 +55,7 @@ export default {
       });
     },
     async regiser() {
-      const { username, password } = this;
-      console.log(JSON.stringify({ username, password, email }));
+      const { username, password, email } = this;
       this.authResponse = await fetch(
         "http://localhost:3000/api/v1/auth/register",
         {
