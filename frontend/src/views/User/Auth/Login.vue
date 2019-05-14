@@ -19,7 +19,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import Header from "@/components/struct/Header.vue";
 
 export default {
@@ -56,7 +55,7 @@ export default {
     },
     async regiser() {
       const { username, password, email } = this;
-      this.authResponse = await fetch(
+      this.authResponse = await (await fetch(
         "http://localhost:3000/api/v1/auth/register",
         {
           method: "post",
@@ -65,7 +64,7 @@ export default {
             "Content-Type": "application/json"
           }
         }
-      ).then(r => r.json());
+      )).json();
       this.$swal({
         toast: true,
         position: "top-end",
