@@ -1,4 +1,8 @@
 const Sequelize = require('sequelize');
+const bcrypt = require('bcryptjs');
+const fastify = require('fastify')({
+  logger: true,
+});
 
 const sequelize = new Sequelize('postgres://socialdev:pass@localhost:5432/social');
 
@@ -8,10 +12,6 @@ User.init({
   email: { type: Sequelize.STRING, unique: true },
   password: Sequelize.STRING,
 }, { sequelize, modelName: 'user' });
-
-const fastify = require('fastify')({
-  logger: true,
-});
 
 fastify.register(require('fastify-cors'), { origin: '*' });
 
@@ -31,10 +31,13 @@ fastify.post('/api/v1/auth/login', async (req, res) => {
   const { username, password } = req.body;
 
   const user = await User.findOne({
-    where: { username, password },
+    where: { username },
   });
   if (user) {
-    return { status: 'success', message: 'Logged In' };
+    if (bcrypt.compareSync(password, user.password)) {
+      return { status: 'success', message: 'Logged In' };
+    }
+    return { status: 'error', message: 'Invalid Password' };
   }
   return { status: 'error', message: 'An Error Happens' };
 });
@@ -49,13 +52,18 @@ fastify.post('/api/v1/auth/login', async (req, res) => {
 fastify.post('/api/v1/auth/register', async (req, res) => {
   res.type('application/json').code(200);
   const { username, password, email } = req.body;
+
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+
+
   let transaction;
   try {
     // get transaction
     transaction = await sequelize.transaction();
     await User.sync();
     await User.create({
-      username, password, email,
+      username, password: hash, email,
     }, { transaction });
     await transaction.commit();
   } catch (err) {
