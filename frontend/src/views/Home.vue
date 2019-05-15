@@ -4,12 +4,7 @@
 
 <script>
 // @ is an alias to /src
-import Header from "@/components/struct/Header.vue";
-
 export default {
-  name: "home",
-  components: {
-    Header
-  }
+  name: 'home',
 };
 </script>

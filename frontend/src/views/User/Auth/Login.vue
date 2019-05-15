@@ -19,61 +19,59 @@
 </template>
 
 <script>
-import Header from "@/components/struct/Header.vue";
-
 export default {
-  name: "home",
+  name: 'home',
   data() {
     return {
       username: null,
       password: null,
       email: null,
-      selection: "login"
+      selection: 'login',
     };
   },
   methods: {
     async login() {
       const { username, password } = this;
       this.authResponse = await (await fetch(
-        "http://localhost:3000/api/v1/auth/login",
+        'http://localhost:3000/api/v1/auth/login',
         {
-          method: "post",
+          method: 'post',
           body: JSON.stringify({ username, password }),
           headers: {
-            "Content-Type": "application/json"
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       )).json();
       this.$swal({
         toast: true,
-        position: "top-end",
+        position: 'top-end',
         showConfirmButton: false,
         timer: 3000,
         type: this.authResponse.status,
-        title: this.authResponse.message
+        title: this.authResponse.message,
       });
     },
     async regiser() {
       const { username, password, email } = this;
       this.authResponse = await (await fetch(
-        "http://localhost:3000/api/v1/auth/register",
+        'http://localhost:3000/api/v1/auth/register',
         {
-          method: "post",
+          method: 'post',
           body: JSON.stringify({ username, password, email }),
           headers: {
-            "Content-Type": "application/json"
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       )).json();
       this.$swal({
         toast: true,
-        position: "top-end",
+        position: 'top-end',
         showConfirmButton: false,
         timer: 3000,
         type: this.authResponse.status,
-        title: this.authResponse.message
+        title: this.authResponse.message,
       });
-    }
-  }
+    },
+  },
 };
 </script>
