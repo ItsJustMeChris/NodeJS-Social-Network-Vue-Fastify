@@ -5,12 +5,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-
+    sessionToken: null,
   },
   mutations: {
-
+    setSessionToken(state, token) {
+      state.sessionToken = token;
+    },
   },
   actions: {
-
   },
 });

@@ -42,6 +42,7 @@ export default {
           }
         }
       )).json();
+      this.$store.commit("setSessionToken", this.authResponse.token);
       this.$swal({
         toast: true,
         position: "top-end",
@@ -63,6 +64,7 @@ export default {
           }
         }
       )).json();
+      this.$store.commit("setSessionToken", this.authResponse.token);
       this.$swal({
         toast: true,
         position: "top-end",

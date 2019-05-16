@@ -5,7 +5,7 @@ const fastify = require('fastify')({
   logger: true,
 });
 
-const sequelize = new Sequelize('postgres://socialdev:pass@localhost:5432/social');
+const sequelize = new Sequelize('postgres://dev:dev@localhost:5432/social');
 
 class User extends Sequelize.Model { }
 User.init({
