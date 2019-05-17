@@ -66,6 +66,11 @@ router.beforeEach((to, from, next) => {
     } else {
       next();
     }
+  } else if (to.matched.some(record => record.name === 'login') && store.getters.sessionToken) {
+    next({
+      path: '/',
+      query: { redirect: to.fullPath },
+    });
   } else {
     next();
   }
