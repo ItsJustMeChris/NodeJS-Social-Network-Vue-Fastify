@@ -28,16 +28,7 @@ export default {
     async checkSession() {
       const token = this.$store.getters.sessionToken;
       if (token) {
-        const { auth } = await (await fetch(
-          "http://localhost:3000/api/v1/auth/verify",
-          {
-            method: "post",
-            body: JSON.stringify({ token }),
-            headers: {
-              "Content-Type": "application/json"
-            }
-          }
-        )).json();
+        const { auth } = await this.callAPI("auth/verify", "post", { token });
         if (!auth) {
           this.$store.commit("setSessionToken", undefined);
           this.$router.push("/");
