@@ -29,17 +29,6 @@ SessionToken.belongsTo(User);
 
 fastify.register(require('fastify-cors'), { origin: '*' });
 
-fastify.get('/', async (req, res) => {
-  res.type('application/json').code(200);
-  return { error: '' };
-});
-
-/*
-  POST
-  @username
-  @password
-  >token
-*/
 async function generateToken() {
   const buffer = await new Promise((resolve, reject) => {
     crypto.randomBytes(256, (ex, buf) => {
@@ -56,6 +45,12 @@ async function generateToken() {
   return token;
 }
 
+/*
+  POST
+  @username
+  @password
+  >token
+*/
 fastify.post('/api/v1/auth/login', async (req, res) => {
   res.type('application/json').code(200);
   const { username, password } = req.body;
@@ -87,29 +82,47 @@ fastify.post('/api/v1/auth/login', async (req, res) => {
   return { status: 'error', message: 'An Error Happens' };
 });
 
+/*
+  POST
+  @token
+  >[usersSessionTokens]
+*/
 fastify.post('/api/v1/auth/sessions', async (req, res) => {
   res.type('application/json').code(200);
   const { token } = req.body;
-  const session = await SessionToken.findOne({
-    where: { token },
-  });
-  if (session) {
-    const allTokens = await SessionToken.findAll({ where: { userId: session.userId } });
+  try {
+    const session = await SessionToken.findOne({
+      where: { token },
+    });
+    if (session) {
+      const allTokens = await SessionToken.findAll({ where: { userId: session.userId } });
 
-    return allTokens.map(e => ({ token: e.token, created: e.createdAt }));
+      return allTokens.map(e => ({ token: e.token, created: e.createdAt }));
+    }
+  } catch (error) {
+    return { status: 'error', message: 'An Error Happens' };
   }
   return { status: 'error', message: 'An Error Happens' };
 });
 
+/*
+  POST
+  @token
+  >{success}
+*/
 fastify.post('/api/v1/auth/logout', async (req, res) => {
   res.type('application/json').code(200);
   const { token } = req.body;
-  const session = await SessionToken.findOne({
-    where: { token },
-  });
-  if (session) {
-    session.destroy();
-    return { status: 'success', message: 'Logged Out' };
+  try {
+    const session = await SessionToken.findOne({
+      where: { token },
+    });
+    if (session) {
+      session.destroy();
+      return { status: 'success', message: 'Logged Out' };
+    }
+  } catch (error) {
+    return { status: 'Error', message: 'An Error Happens' };
   }
   return { status: 'Error', message: 'An Error Happens' };
 });
@@ -127,7 +140,6 @@ fastify.post('/api/v1/auth/register', async (req, res) => {
 
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
-
 
   let transaction;
   try {
