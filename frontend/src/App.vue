@@ -9,8 +9,41 @@
 import Header from "./components/struct/Header.vue";
 
 export default {
+  data() {
+    return {
+      sessionChecker: null
+    };
+  },
+  created() {
+    this.checkSession();
+    this.sessionChecker = setInterval(this.checkSession, 60000);
+  },
+  beforeDestroy() {
+    clearInterval(this.sessionChecker);
+  },
   components: {
     Header
+  },
+  methods: {
+    async checkSession() {
+      const token = this.$store.getters.sessionToken;
+      if (token) {
+        const { auth } = await (await fetch(
+          "http://localhost:3000/api/v1/auth/verify",
+          {
+            method: "post",
+            body: JSON.stringify({ token }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        )).json();
+        if (!auth) {
+          this.$store.commit("setSessionToken", undefined);
+          this.$router.push("/");
+        }
+      }
+    }
   }
 };
 </script>
