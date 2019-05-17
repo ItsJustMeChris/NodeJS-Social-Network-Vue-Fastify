@@ -7,8 +7,6 @@ import Sessions from './views/User/Auth/Session.vue';
 import LogOut from './components/User/Auth/Logout.vue';
 import store from './store';
 
-const { sessionToken } = store.getters;
-
 Vue.use(Router);
 
 const router = new Router({
@@ -20,7 +18,7 @@ const router = new Router({
       name: 'home',
       component: Home,
       meta: {
-        authedShouldShow: true,
+        requiresAuth: false,
       },
     },
     {
@@ -28,7 +26,7 @@ const router = new Router({
       name: 'about',
       component: About,
       meta: {
-        authedShouldShow: true,
+        requiresAuth: false,
       },
     },
     {
@@ -36,7 +34,7 @@ const router = new Router({
       name: 'login',
       component: Login,
       meta: {
-        authedShouldShow: sessionToken === null,
+        requiresAuth: false,
       },
     },
     {
@@ -44,7 +42,7 @@ const router = new Router({
       name: 'logout',
       component: LogOut,
       meta: {
-        authedShouldShow: sessionToken !== null,
+        requiresAuth: true,
       },
     },
     {
@@ -52,17 +50,25 @@ const router = new Router({
       name: 'sessions',
       component: Sessions,
       meta: {
-        authedShouldShow: sessionToken !== null,
+        requiresAuth: true,
       },
     },
   ],
 });
 
 router.beforeEach((to, from, next) => {
-  if (!to.matched.some(record => record.meta.authedShouldShow)) {
-    return null;
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!store.getters.sessionToken) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath },
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
   }
-  return next();
 });
 
 export default router;

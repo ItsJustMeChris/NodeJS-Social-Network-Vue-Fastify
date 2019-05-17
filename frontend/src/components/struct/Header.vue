@@ -5,7 +5,6 @@
         v-for="route in $router.options.routes"
         :to="route"
         :key="route.path"
-        v-if="route.meta.authedShouldShow"
       >{{route.name}}</router-link>
     </main>
   </header>
