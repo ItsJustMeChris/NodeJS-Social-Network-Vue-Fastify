@@ -140,9 +140,9 @@ fastify.post('/api/v1/auth/logout', async (req, res) => {
       return { status: 'success', message: 'Logged Out' };
     }
   } catch (error) {
-    return { status: 'Error', message: 'An Error Happens' };
+    return { status: 'error', message: 'An Error Happens' };
   }
-  return { status: 'Error', message: 'An Error Happens' };
+  return { status: 'error', message: 'An Error Happens' };
 });
 
 /*
