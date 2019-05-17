@@ -1,5 +1,6 @@
 <template>
   <div>
+    Sessions:
     <ul>
       <li v-for="(session, index) in sessions" :key="index">{{ session }}</li>
     </ul>
@@ -14,17 +15,26 @@ export default {
       sessions: null
     };
   },
-  beforeCreated() {
+  created () {
+    // fetch the data when the view is created and the data is
+    // already being observed
+    this.fetchSessions()
+  },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'fetchSessions'
+  },
+  methods: {
+    async fetchSessions() {
       this.sessions = await (await fetch('http://localhost:3000/api/v1/auth/sessions',
       {
         method: 'post',
-        body: JSON.stringify({session}),
+        body: JSON.stringify({ token: this.$store.getters.sessionToken }),
         headers: {
           'Content-Type': 'application/json'
         }
       })).json();
-  },
-  methods: {
+    },
     async login() {
       const { username, password } = this;
       this.authResponse = await (await fetch(

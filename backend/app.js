@@ -87,6 +87,20 @@ fastify.post('/api/v1/auth/login', async (req, res) => {
   return { status: 'error', message: 'An Error Happens' };
 });
 
+fastify.post('/api/v1/auth/sessions', async (req, res) => {
+  res.type('application/json').code(200);
+  const { token } = req.body;
+  const session = await SessionToken.findOne({
+    where: { token },
+  });
+  if (session) {
+    const allTokens = await SessionToken.findAll({ where: { userId: session.userId } });
+
+    return allTokens.map(e => ({ token: e.token, created: e.createdAt }));
+  }
+  return { status: 'error', message: 'An Error Happens' };
+});
+
 /*
   POST
   @username
