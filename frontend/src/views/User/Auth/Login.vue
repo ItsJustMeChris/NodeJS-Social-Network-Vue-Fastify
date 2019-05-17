@@ -33,71 +33,24 @@ export default {
   methods: {
     async login() {
       const { username, password } = this;
-      try {
-        this.authResponse = await (await fetch(
-          "http://localhost:3000/api/v1/auth/login",
-          {
-            method: "post",
-            body: JSON.stringify({ username, password }),
-            headers: {
-              "Content-Type": "application/json"
-            }
-          }
-        )).json();
-        this.$store.commit("setSessionToken", this.authResponse.token);
-        this.$swal({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          type: this.authResponse.status,
-          title: this.authResponse.message
-        });
-        this.$router.push("/");
-      } catch (error) {
-        this.$swal({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          type: "error",
-          title: "API Error"
-        });
-      }
+      const authResponse = await this.callAPI("auth/login", "post", {
+        username,
+        password
+      });
+      if (authResponse.token)
+        this.$store.commit("setSessionToken", authResponse.token);
+      this.$router.push("/");
     },
     async regiser() {
       const { username, password, email } = this;
-      try {
-        this.authResponse = await (await fetch(
-          "http://localhost:3000/api/v1/auth/register",
-          {
-            method: "post",
-            body: JSON.stringify({ username, password, email }),
-            headers: {
-              "Content-Type": "application/json"
-            }
-          }
-        )).json();
-        this.$store.commit("setSessionToken", this.authResponse.token);
-        this.$swal({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          type: this.authResponse.status,
-          title: this.authResponse.message
-        });
-        this.$router.push("/");
-      } catch (error) {
-        this.$swal({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          type: "error",
-          title: "API Error"
-        });
-      }
+      const authResponse = await this.callAPI("auth/register", "post", {
+        username,
+        password,
+        email
+      });
+      if (authResponse.token)
+        this.$store.commit("setSessionToken", authResponse.token);
+      this.$router.push("/");
     }
   }
 };
