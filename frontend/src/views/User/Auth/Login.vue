@@ -21,12 +21,13 @@
 <script>
 export default {
   name: "login",
+  props: { requestedAction: String },
   data() {
     return {
       username: null,
       password: null,
       email: null,
-      selection: "login"
+      selection: this.requestedAction
     };
   },
   methods: {
