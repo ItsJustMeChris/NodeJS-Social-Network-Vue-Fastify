@@ -33,6 +33,16 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: Login,
+      props: { requestedAction: 'login' },
+      meta: {
+        requiresAuth: false,
+      },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Login,
+      props: { requestedAction: 'register' },
       meta: {
         requiresAuth: false,
       },
