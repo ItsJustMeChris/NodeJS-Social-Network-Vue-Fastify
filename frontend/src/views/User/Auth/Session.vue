@@ -1,9 +1,11 @@
 <template>
   <div>
     Sessions:
-    <ul>
-      <li v-for="(session, index) in sessions" :key="index">{{ session }}</li>
-    </ul>
+    <div v-for="(session, index) in sessions" :key="index">
+      {{ session }}
+      <div v-if="session.token === $store.getters.sessionToken">Current</div>
+      <button @click="removeSession(session.token)">Remove</button>
+    </div>
   </div>
 </template>
 
@@ -12,28 +14,40 @@ export default {
   name: "session",
   data() {
     return {
-      sessions: null
+      sessions: [],
+      async removeSession(token) {
+        await (await fetch("http://localhost:3000/api/v1/auth/logout", {
+          method: "post",
+          body: JSON.stringify({ token }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })).json();
+        sessions = sessions.filter(e => e.token !== token);
+      }
     };
   },
-  created () {
+  created() {
     // fetch the data when the view is created and the data is
     // already being observed
-    this.fetchSessions()
+    this.fetchSessions();
   },
   watch: {
     // call again the method if the route changes
-    '$route': 'fetchSessions'
+    $route: "fetchSessions"
   },
   methods: {
     async fetchSessions() {
-      this.sessions = await (await fetch('http://localhost:3000/api/v1/auth/sessions',
-      {
-        method: 'post',
-        body: JSON.stringify({ token: this.$store.getters.sessionToken }),
-        headers: {
-          'Content-Type': 'application/json'
+      this.sessions = await (await fetch(
+        "http://localhost:3000/api/v1/auth/sessions",
+        {
+          method: "post",
+          body: JSON.stringify({ token: this.$store.getters.sessionToken }),
+          headers: {
+            "Content-Type": "application/json"
+          }
         }
-      })).json();
+      )).json();
     },
     async login() {
       const { username, password } = this;
