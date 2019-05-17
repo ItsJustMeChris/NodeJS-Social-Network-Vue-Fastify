@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <p>You chose {{ $store.getters.sessionToken }}</p>
+    <p>Current Session: {{ $store.getters.sessionToken }}</p>
   </div>
 </template>
 

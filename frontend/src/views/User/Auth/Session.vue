@@ -14,61 +14,74 @@ export default {
   name: "session",
   data() {
     return {
-      sessions: [],
-      async removeSession(token) {
-        await (await fetch("http://localhost:3000/api/v1/auth/logout", {
-          method: "post",
-          body: JSON.stringify({ token }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        })).json();
-        sessions = sessions.filter(e => e.token !== token);
-      }
+      sessions: []
     };
   },
   created() {
-    // fetch the data when the view is created and the data is
-    // already being observed
     this.fetchSessions();
   },
   watch: {
-    // call again the method if the route changes
     $route: "fetchSessions"
   },
   methods: {
-    async fetchSessions() {
-      this.sessions = await (await fetch(
-        "http://localhost:3000/api/v1/auth/sessions",
-        {
-          method: "post",
-          body: JSON.stringify({ token: this.$store.getters.sessionToken }),
-          headers: {
-            "Content-Type": "application/json"
+    async removeSession(token) {
+      try {
+        const logoutResponse = await (await fetch(
+          "http://localhost:3000/api/v1/auth/logout",
+          {
+            method: "post",
+            body: JSON.stringify({ token }),
+            headers: {
+              "Content-Type": "application/json"
+            }
           }
+        )).json();
+        this.sessions = this.sessions.filter(e => e.token !== token);
+        this.$swal({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          type: logoutResponse.status,
+          title: logoutResponse.message
+        });
+        if (this.sessions.length === 0) {
+          this.$store.commit("setSessionToken", undefined);
+          this.$router.push("/");
         }
-      )).json();
+      } catch (error) {
+        this.$swal({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          type: "error",
+          title: "API Error"
+        });
+      }
     },
-    async login() {
-      const { username, password } = this;
-      this.authResponse = await (await fetch(
-        "http://localhost:3000/api/v1/auth/login",
-        {
-          method: "post",
-          body: JSON.stringify({ username, password }),
-          headers: {
-            "Content-Type": "application/json"
+    async fetchSessions() {
+      try {
+        this.sessions = await (await fetch(
+          "http://localhost:3000/api/v1/auth/sessions",
+          {
+            method: "post",
+            body: JSON.stringify({ token: this.$store.getters.sessionToken }),
+            headers: {
+              "Content-Type": "application/json"
+            }
           }
-        }
-      )).json();
-      this.$swal({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        type: this.authResponse.status,
-        title: this.authResponse.message
-      });
+        )).json();
+      } catch (error) {
+        this.$swal({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          type: "error",
+          title: "API Error"
+        });
+      }
     }
   }
 };
