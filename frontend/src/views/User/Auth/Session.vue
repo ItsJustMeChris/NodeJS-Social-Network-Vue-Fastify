@@ -17,7 +17,7 @@ export default {
       sessions: []
     };
   },
-  created() {
+  beforeMount() {
     this.fetchSessions();
   },
   watch: {
