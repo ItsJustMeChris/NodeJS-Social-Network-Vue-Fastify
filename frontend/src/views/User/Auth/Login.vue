@@ -52,6 +52,7 @@ export default {
           type: this.authResponse.status,
           title: this.authResponse.message
         });
+        this.$router.push("/");
       } catch (error) {
         this.$swal({
           toast: true,
@@ -85,6 +86,7 @@ export default {
           type: this.authResponse.status,
           title: this.authResponse.message
         });
+        this.$router.push("/");
       } catch (error) {
         this.$swal({
           toast: true,
