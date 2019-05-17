@@ -85,6 +85,24 @@ fastify.post('/api/v1/auth/login', async (req, res) => {
 /*
   POST
   @token
+  >true/false
+*/
+fastify.post('/api/v1/auth/verify', async (req, res) => {
+  res.type('application/json').code(200);
+  const { token } = req.body;
+
+  const session = await SessionToken.findOne({
+    where: { token },
+  });
+  if (session) {
+    return { auth: true };
+  }
+  return { auth: false };
+});
+
+/*
+  POST
+  @token
   >[usersSessionTokens]
 */
 fastify.post('/api/v1/auth/sessions', async (req, res) => {
