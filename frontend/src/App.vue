@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import Header from "./components/struct/Header.vue";
+import Header from './components/struct/Header.vue';
 
 export default {
   data() {
     return {
-      sessionChecker: null
+      sessionChecker: null,
     };
   },
   created() {
@@ -22,27 +22,27 @@ export default {
     clearInterval(this.sessionChecker);
   },
   components: {
-    Header
+    Header,
   },
   methods: {
     async checkSession() {
       const token = this.$store.getters.sessionToken;
       if (token) {
-        const { auth } = await this.callAPI("auth/verify", "post", { token });
+        const { auth } = await this.callAPI('auth/verify', 'post', { token });
         if (!auth) {
-          this.$store.commit("setSessionToken", undefined);
-          this.$router.push("/");
+          this.$store.commit('setSessionToken', undefined);
+          this.$router.push('/');
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

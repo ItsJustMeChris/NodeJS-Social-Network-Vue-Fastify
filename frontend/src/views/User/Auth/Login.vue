@@ -14,21 +14,21 @@
 </template>
 
 <script>
-import Login from "../../../components/User/Auth/Login";
-import Register from "../../../components/User/Auth/Register";
+import Login from '../../../components/User/Auth/Login';
+import Register from '../../../components/User/Auth/Register';
 
 export default {
-  name: "login",
+  name: 'login',
   props: { requestedAction: String },
   components: {
     Login,
-    Register
+    Register,
   },
   data() {
     return {
-      selection: this.requestedAction
+      selection: this.requestedAction,
     };
   },
-  methods: {}
+  methods: {},
 };
 </script>

@@ -1,4 +1,6 @@
-<template></template>
+<template>
+  <div>Logged Out</div>
+</template>
 
 
 <script>
@@ -7,18 +9,18 @@ export default {
     this.logout();
   },
   watch: {
-    $route: "logout"
+    $route: 'logout',
   },
   methods: {
     async logout() {
       const token = this.$store.getters.sessionToken;
-      await this.callAPI("auth/logout", "post", {
-        token
+      await this.callAPI('auth/logout', 'post', {
+        token,
       });
-      this.$store.commit("setSessionToken", undefined);
-      this.$router.push("/");
-    }
-  }
+      this.$store.commit('setSessionToken', undefined);
+      this.$router.push('/');
+    },
+  },
 };
 </script>
 

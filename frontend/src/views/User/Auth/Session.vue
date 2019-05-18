@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import Sessions from "../../../components/User/Auth/Sessions";
+import Sessions from '../../../components/User/Auth/Sessions.vue';
 
 export default {
   components: {
-    Sessions
-  }
+    Sessions,
+  },
 };
 </script>

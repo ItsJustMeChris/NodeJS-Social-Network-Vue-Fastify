@@ -13,21 +13,22 @@ export default {
     return {
       username: null,
       password: null,
-      email: null
+      email: null,
     };
   },
   methods: {
     async regiser() {
       const { username, password, email } = this;
-      const authResponse = await this.callAPI("auth/register", "post", {
+      const authResponse = await this.callAPI('auth/register', 'post', {
         username,
         password,
-        email
+        email,
       });
-      if (authResponse.token)
-        this.$store.commit("setSessionToken", authResponse.token);
-      this.$router.push("/");
-    }
-  }
+      if (authResponse.token) {
+        this.$store.commit('setSessionToken', authResponse.token);
+      }
+      this.$router.push('/');
+    },
+  },
 };
 </script>

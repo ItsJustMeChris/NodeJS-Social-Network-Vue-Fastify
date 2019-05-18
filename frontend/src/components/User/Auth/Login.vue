@@ -11,20 +11,21 @@ export default {
   data() {
     return {
       username: null,
-      password: null
+      password: null,
     };
   },
   methods: {
     async login() {
       const { username, password } = this;
-      const authResponse = await this.callAPI("auth/login", "post", {
+      const authResponse = await this.callAPI('auth/login', 'post', {
         username,
-        password
+        password,
       });
-      if (authResponse.token)
-        this.$store.commit("setSessionToken", authResponse.token);
-      this.$router.push("/");
-    }
-  }
+      if (authResponse.token) {
+        this.$store.commit('setSessionToken', authResponse.token);
+      }
+      this.$router.push('/');
+    },
+  },
 };
 </script>
