@@ -22,6 +22,7 @@ User.init({
 class SessionToken extends Sequelize.Model { }
 SessionToken.init({
   token: { type: Sequelize.STRING, unique: true },
+  ip: { type: Sequelize.STRING },
 }, { sequelize, modelName: 'token' });
 
 User.hasMany(SessionToken, { as: 'token' });
@@ -65,8 +66,10 @@ fastify.post('/api/v1/auth/login', async (req, res) => {
         transaction = await sequelize.transaction();
         await SessionToken.sync();
         const token = await generateToken();
+        const { ip } = req;
         const userSession = await SessionToken.create({
           token,
+          ip,
         }, { transaction });
         await transaction.commit();
         user.addToken(userSession);
@@ -114,8 +117,7 @@ fastify.post('/api/v1/auth/sessions', async (req, res) => {
     });
     if (session) {
       const allTokens = await SessionToken.findAll({ where: { userId: session.userId } });
-
-      return allTokens.map(e => ({ token: e.token, created: e.createdAt }));
+      return allTokens.map(e => ({ ip: e.ip, token: e.token, created: e.createdAt }));
     }
   } catch (error) {
     return { status: 'error', message: 'An Error Happens' };
@@ -170,8 +172,10 @@ fastify.post('/api/v1/auth/register', async (req, res) => {
     try {
       await SessionToken.sync();
       const token = await generateToken();
+      const { ip } = req;
       const userSession = await SessionToken.create({
         token,
+        ip,
       }, { transaction });
       await transaction.commit();
       user.addToken(userSession);
@@ -196,7 +200,7 @@ fastify.post('/api/v1/auth/register', async (req, res) => {
   @userid
   >array[]
 */
-fastify.get('/api/v1/user/:userid/info', async (req, res) => {
+fastify.post('/api/v1/user/:userid/info', async (req, res) => {
   res.type('application/json').code(200);
   return { name: 'bob', message: 'registered' };
 });
