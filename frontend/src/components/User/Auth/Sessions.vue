@@ -1,10 +1,20 @@
 <template>
   <div>
-    Sessions:
-    <div v-for="(session, index) in sessions" :key="index">
-      {{ session }}
-      <div v-if="session.token === $store.getters.sessionToken">Current</div>
-      <button @click="removeSession(session.token)">Remove</button>
+    <p>Sessions:</p>
+    <div class="card-container">
+      <div class="card" v-for="(session, index) in sessions" :key="index">
+        <div
+          class="card-head"
+        >{{session.ip}} {{session.token === $store.getters.sessionToken ? ' | current' : ''}}</div>
+        <div class="card-body">{{session.token}}</div>
+        <div class="card-foot">
+          <button
+            v-if="session.token !== $store.getters.sessionToken"
+            class="float-right"
+            @click="removeSession(session.token)"
+          >X</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -40,3 +50,28 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.card {
+  width: 25rem;
+  min-height: 5rem;
+  background: #333;
+  margin: 2rem;
+}
+
+.card-head {
+  padding: 1rem;
+  border-bottom: 2px solid #999;
+}
+
+.card-body {
+  height: 2rem;
+  padding: 2rem;
+}
+
+.card-foot {
+  height: 2rem;
+  background: #888;
+  padding: 1rem;
+}
+</style>
