@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import About from './views/About.vue';
 import Login from './views/User/Auth/Login.vue';
+import Profile from './views/User/Profile/Profile.vue';
 import Sessions from './views/User/Auth/Session.vue';
 import LogOut from './components/User/Auth/Logout.vue';
 import store from './store';
@@ -59,6 +60,14 @@ const router = new Router({
       path: '/sessions',
       name: 'sessions',
       component: Sessions,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/user/:id',
+      name: 'profile',
+      component: Profile,
       meta: {
         requiresAuth: true,
       },
